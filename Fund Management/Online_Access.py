@@ -23,45 +23,53 @@ def log_in():
     Input: null
     Output: the BeautifulSoup object of the holding page
     '''
-    while True:
-        print('password:(type in exit to return)');
-        password=OtherF.pwd_input();
-        if password=='25582558Dc':
-            break;
-        elif password=='exit':
-            return 0;
-        else:
-            print("Incorrect keywords!");
-            print();
-    
-    password=='25582558Dc';
-    username='15262240586';
-    print();
-    print("Begin logging in.");
+
+    print("Initialize browser.");
+    config=Global.get_value('config');
     option = Options();
     option.add_argument('--start-maximized')
     option.add_argument('--headless')
     option.add_argument('--incognito')
     option.add_argument('--disable-gpu')
-    path="A:\\Program Files\\Python\\Python3.6\\chromedriver.exe"
+    path=config['Path']['ChromeDriverPath'];
     driver = webdriver.Chrome(executable_path=path);
     driver.minimize_window();
-    try:
-        driver.get('https://login.1234567.com.cn/login') 
-        time.sleep(1)
-        driver.find_element_by_id('tbname').click()
-        driver.find_element_by_id('tbname').send_keys(username) 
-        driver.find_element_by_id('tbpwd').click()
-        driver.find_element_by_id('tbpwd').send_keys(password)
-        driver.find_element_by_class_name('submit').click() 
-        time.sleep(10)
-        driver.find_element_by_id('myassets_hold').click() 
-        time.sleep(3)
-        content = driver.page_source.encode('utf-8')
-        driver.close()
-    except:
-        Warning.warning("Internet problem!");
-        return 0;
+    while True:
+        print('username:(type in exit to return)');
+        username=input();
+        if username=='exit':
+            driver.close()
+            return 0;
+        print('password:(type in exit to return)');
+        password=OtherF.pwd_input();
+        if password=='exit':
+            driver.close();
+            return 0;
+        print();
+        print("Begin logging in.");
+
+        try:
+            driver.get('https://login.1234567.com.cn/login') 
+            time.sleep(1)
+            driver.find_element_by_id('tbname').click()
+            driver.find_element_by_id('tbname').send_keys(username) 
+            driver.find_element_by_id('tbpwd').click()
+            driver.find_element_by_id('tbpwd').send_keys(password)
+            driver.find_element_by_class_name('submit').click() 
+            time.sleep(10)
+        except:
+            driver.close();
+            Warning.warning("Internet problem!");
+            return 0;
+        try:
+            driver.find_element_by_id('myassets_hold').click() 
+            time.sleep(3)
+            content = driver.page_source.encode('utf-8')
+            driver.close()
+            break;
+        except:
+            Warning.warning("Incorrect keywords!");
+            continue;
     print("Successful.");
     return content;
 
